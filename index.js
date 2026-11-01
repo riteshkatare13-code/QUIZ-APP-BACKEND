@@ -27,6 +27,14 @@ app.use("/quiz", quizRouter);
 //     res.send(quizzes);
 // })
 
+
+
+app.post("/auth/login", (req, res) => {
+    const { username, password } = req.body;
+    console.log({ username, password });
+    res.json({ username, password, message: 'Got Credentials' })
+});
+
 app.listen(3000, () => {
     console.log('Server Started...')
 })
