@@ -36,5 +36,5 @@ app.post("/auth/login", (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log('Server Started...')
+    console.log('Server Started on PORT 3000...')
 })
