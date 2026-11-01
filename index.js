@@ -1,17 +1,31 @@
 const express = require('express');
 const cors = require('cors');
 const quizzes = require('./db/quizzes');
+const quizRouter = require('./router/quiz.router');
 
 const app = express();
+
+
+app.use(cors());
+
+
+app.use(express.json());
 
 app.get("/", (req, res) => {
     res.send('Hello World')
 })
 
 
-app.get("/quiz", (req, res) => {
-    res.send(quizzes);
-})
+
+
+
+
+
+app.use("/quiz", quizRouter);
+
+// app.get("/quiz", (req, res) => {
+//     res.send(quizzes);
+// })
 
 app.listen(3000, () => {
     console.log('Server Started...')
