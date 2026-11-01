@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const quizzes = require('./db/quizzes');
 const quizRouter = require('./router/quiz.router');
+const userdata = require('./db/users');
 
 const app = express();
 
@@ -32,7 +33,12 @@ app.use("/quiz", quizRouter);
 app.post("/auth/login", (req, res) => {
     const { username, password } = req.body;
     console.log({ username, password });
-    res.json({ username, password, message: 'Got Credentials' })
+    const isUserVerified = userdata.users.some(user => user.username === username && user.password === password);
+    if(isUserVerified){
+        res.send({message: 'User Verified Successfully'});
+    }else{
+        res.status(401).send({message: 'Invalid Credentials'})
+    }
 });
 
 app.listen(3000, () => {
