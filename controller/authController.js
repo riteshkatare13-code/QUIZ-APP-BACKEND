@@ -16,7 +16,7 @@ const signupHandler = (req, res) => {
         const id = uuid();
         const newUser = {id, username, password};
         userdata.users = [...userdata.users, newUser];
-        const token = jwt.sign({id: username}, process.env.SECRET_TOKEN);
+        const token = jwt.sign({id: username}, SECRET_TOKEN);
         res.json({message: 'User created successfully'});
     }
 }
