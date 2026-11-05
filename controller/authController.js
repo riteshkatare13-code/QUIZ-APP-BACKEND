@@ -7,6 +7,19 @@ const { v4: uuid } = require('uuid');
 SECRET_TOKEN = "7b19e43371db1419bfb3fc72a3f69383607e58fcb2f06104dc4995391d10e1d1"
 
 
+
+// Creating a middleware to verify the token
+const authVerify = (req, res, next) => {
+    const token = req.headers.authorization;
+    try{
+        const decodedToken = jwt.verify(token, SECRET_TOKEN);
+        req.user = { userId: decodedToken.id }
+        return next();
+    }catch(err){
+        console.error(`Error from server ${JSON.stringify(err)}`)
+    }
+}
+
 const signupHandler = (req, res) => {
     const { username, password } = req.body;
     const isUserExist = userdata.users.some(user => user.username === username);
@@ -34,4 +47,4 @@ const loginHandler = (req, res) => {
 }
 
 
-module.exports = { loginHandler, signupHandler };
+module.exports = { loginHandler, signupHandler, authVerify };

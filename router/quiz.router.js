@@ -1,9 +1,10 @@
 const express = require('express'); 
 const quizRouter = express.Router(); 
-const quizzes = require('../db/quizzes'); 
+const quizzes = require('../db/quizzes');
+const { authVerify } = require("../controller/authController") 
 
 quizRouter.route("/")
-  .get((req, res) => {
+  .get(authVerify, (req, res) => {
       console.log("➡️ /quiz route was hit!");
       console.log("📦 Type of quizzes data:", typeof quizzes);
       console.log("📄 Content of quizzes data:", quizzes);

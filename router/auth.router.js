@@ -6,6 +6,7 @@ const {loginHandler, signupHandler} = require('../controller/authController');
 
 
 
+
 loginRouter.route("/")
     .post(loginHandler);
 
