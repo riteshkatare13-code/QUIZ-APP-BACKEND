@@ -3,7 +3,8 @@ const cors = require('cors');
 const quizRouter = require('./router/quiz.router');
 const {loginRouter, signupRouter} = require('./router/auth.router');
 const { authVerify } = require("./router/quiz.router");
-const pageNotFound = require("./middleware/pageNotFound")
+const pageNotFound = require("./middleware/pageNotFound");
+const categoryRouter = require('./router/categoryRouter');
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.get("/", (req, res) => {
 
 
 
-
+app.use("/categories", categoryRouter)
 app.use("/quiz", quizRouter);
 
 // app.get("/quiz", (req, res) => {
