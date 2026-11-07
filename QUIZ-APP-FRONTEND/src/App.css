@@ -1,184 +1,260 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+/* ==========================================================================
+   0. GLOBAL FULL-WIDTH ELEMENT RESETS
+   ========================================================================== */
+* {
+  box-sizing: border-box;
 }
 
-.hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
-}
-
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
-}
-
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
+html, 
+body, 
+#root {
+  margin: 0;
   padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
+  width: 100%;
+  overflow-x: hidden; /* Prevents unwanted horizontal layout shifting */
+}
 
-  .logo {
-    height: 18px;
+/* ==========================================================================
+   1. COLOR ARCHITECTURE & DYNAMIC PALETTE (LIGHT CRIMSON OKLCH)
+   ========================================================================== */
+:root {
+  /* Dynamic Hue Seed: Kept at 22 for the rich Crimson red spectrum */
+  --theme-hue: 22; 
+  
+  /* System Background Surfaces - Bright Soft Alabaster with a faint warm red tint */
+  --bg-1: oklch(0.98 0.005 var(--theme-hue) / 0.85); 
+  --bg-drawer: oklch(0.96 0.008 var(--theme-hue));
+  
+  /* Fluid Typography / Variable Foreground Colors - High Contrast Dark Slates */
+  --fg-body: oklch(0.18 0.02 var(--theme-hue)); /* Main text layout color */
+  --fg-1: oklch(0.55 0.22 var(--theme-hue));    /* Primary High-Chroma Crimson Accent */
+  --fg-2: oklch(0.35 0.06 var(--theme-hue));    /* Readable Charcoal Secondary Text */
+  --fg-3: oklch(0.55 0.03 var(--theme-hue));    /* Dimmed Muted State Slate */
+  
+  /* Micro-interactions Glow colors */
+  --glow-active: oklch(0.52 0.23 var(--theme-hue)); /* Solid Deep Crimson Focus Track */
+  --glow-hover: oklch(0.58 0.21 var(--theme-hue));  /* Bright Crimson Hover Trigger */
+}
+
+/* Base resets & semantic helper mapping */
+body {
+  background-color: oklch(0.98 0.005 var(--theme-hue));
+  color: var(--fg-body);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+.bg-1 { background-color: var(--bg-1); }
+.fg-2 { color: var(--fg-2); }
+
+/* ==========================================================================
+   2. MODERN NAVBAR ARCHITECTURE (With Native Nesting)
+   ========================================================================== */
+.navbar {
+  --navbar-padding-x: 1.5rem;
+  --navbar-padding-y: 0.75rem;
+  --navbar-min-height: 4rem;
+  --navbar-color: var(--fg-2);
+  --navbar-hover-color: var(--fg-1);
+  --navbar-active-color: var(--fg-body);
+  
+  /* STICKY SURFACE SCROLL OPTIMIZATIONS */
+  width: 100%;
+  position: sticky; /* Pins element to top layout bounds during scrolling events */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Keeps track sitting safely stacked above regular text or images */
+  
+  display: flex;
+  align-items: center;
+  min-height: var(--navbar-min-height);
+  padding: var(--navbar-padding-y) var(--navbar-padding-x);
+  
+  /* Light-Theme Optimized Glassmorphism Configuration */
+  box-shadow: 0 8px 32px 0 rgba(140, 30, 30, 0.06);
+  backdrop-filter: blur(14px); /* Frost blurs underlying graphics passing underneath tracking space */
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid color-mix(in oklch, var(--fg-body) 8%, transparent);
+  container-type: inline-size;
+
+  .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1440px; 
+    margin: 0 auto;    
+    gap: 1.5rem;
   }
 
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
+  .navbar-brand {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
     text-decoration: none;
-    transition: box-shadow 0.3s;
+    background: linear-gradient(135deg, var(--fg-1), var(--glow-hover));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: filter 0.3s ease;
 
     &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
+      filter: drop-shadow(0 0 10px color-mix(in oklch, var(--fg-1) 35%, transparent));
     }
   }
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
+/* ==========================================================================
+   3. THE DYNAMIC TOGGLER BUTTON
+   ========================================================================== */
+.navbar-toggler {
+  --navbar-toggler-border-color: color-mix(in oklch, var(--fg-body) 12%, transparent);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: color-mix(in oklch, var(--fg-body) 4%, transparent);
+  border: 1px solid var(--navbar-toggler-border-color);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background: color-mix(in oklch, var(--fg-1) 8%, transparent);
+    border-color: var(--fg-1);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--fg-1);
+    outline-offset: 2px;
+  }
+
+  .navbar-toggler-icon {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--fg-2);
+    clip-path: polygon(0% 15%, 100% 15%, 100% 30%, 0% 30%, 
+                       0% 45%, 100% 45%, 100% 60%, 0% 60%, 
+                       0% 75%, 100% 75%, 100% 90%, 0% 90%);
+    transition: background-color 0.2s ease;
+  }
+
+  &:hover .navbar-toggler-icon {
+    background-color: var(--fg-1);
   }
 }
 
-.ticks {
-  position: relative;
-  width: 100%;
+/* ==========================================================================
+   4. NAVIGATION LINKS & PILL CHIPS
+   ========================================================================== */
+.navbar-nav {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.1rem;
+    font-weight: 600;
+    color: var(--navbar-color);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover:not(.disabled) {
+      color: var(--navbar-hover-color);
+      background: color-mix(in oklch, var(--fg-body) 5%, transparent);
+    }
+
+    &.active {
+      color: #ffffff;
+      background: var(--glow-active);
+      box-shadow: 0 4px 14px color-mix(in oklch, var(--glow-active) 30%, transparent);
+    }
+
+    &.disabled {
+      color: var(--fg-3);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+  }
+}
+
+/* ==========================================================================
+   5. NATIVE DIALOG DRAWER (Mobile-First Canvas Slide)
+   ========================================================================== */
+.drawer {
+  border: none;
+  background: var(--bg-drawer);
+  color: var(--fg-body);
+  padding: 1.5rem;
+  
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: min(320px, 85vw);
+  height: 100dvh;
+  margin: 0;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid color-mix(in oklch, var(--fg-body) 8%, transparent);
+    padding-bottom: 1rem;
+
+    .drawer-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--fg-1);
+    }
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  .btn-close {
+    background: transparent;
+    border: none;
+    color: var(--fg-3);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease;
+
+    &:hover { color: var(--fg-1); }
+    &::before { content: "×"; }
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+
+  .drawer-body {
+    flex: 1;
+    .navbar-nav { flex-direction: column; } 
+  }
+}
+
+/* ==========================================================================
+   6. OPTIMIZED RESPONSIVE ADAPTATION (sm:navbar-expand Override)
+   ========================================================================== */
+@media (min-width: 576px) {
+  .navbar-toggler {
+    display: none; 
+  }
+
+  .drawer {
+    all: unset; 
+    display: block;
+
+    .drawer-header {
+      display: none; 
+    }
+
+    .drawer-body .navbar-nav {
+      flex-direction: row; 
+      align-items: center;
+    }
   }
 }
